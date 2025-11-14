@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Lovable demo</title>
+  </head>
+  <body>
+    <h1>Lovable — Demo</h1>
+    <p>Этот каталог `public` присутствует чтобы платформа принимала архив.</p>
+
+    <!-- Пример подключения модуля (локально) -->
+    <script type="module">
+      import { greet } from '/src/index.js';
+      document.body.insertAdjacentHTML('beforeend', `<p>${greet('Lovable')}</p>`);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "lovable-demo",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Минимальный пакет с src и public для загрузки в Lovable",
+  "main": "src/index.js",
+  "license": "MIT"
+}

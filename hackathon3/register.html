@@ -1,0 +1,203 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniChance - Регистрация</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styles specific to registration page */
+        .registration-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <div class="header">
+             <div class="nav-buttons">
+        <a href="community.html"><button class="nav-btn" >👥 Сообщество</button></a>
+        <a href="universities.html"><button class="nav-btn" >🏫 Университеты</button></a>
+        <a href="register.html"><button class="nav-btn" id="register-btn">📝 Регистрация</button></a>
+    </div>
+            <h1>🎓 UniChance - Регистрация</h1>
+          
+            <p>Создайте аккаунт, чтобы сохранить свои данные и рассчитать шансы поступления</p>
+        </div>
+
+        <form id="registrationForm" onsubmit="event.preventDefault(); registerUser();">
+            <div class="columns-container">
+                <div class="column">
+                    <div class="column-title">📋 Личная информация</div>
+                    <div class="form-group">
+                        <label>ФИО *</label>
+                        <input type="text" id="full_name" placeholder="Иванов Иван Иванович" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Возраст *</label>
+                        <input type="number" id="age" min="10" max="100" placeholder="18" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Место обучения *</label>
+                        <input type="text" id="place_of_study" placeholder="Назарбаев Университет" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Страна проживания *</label>
+                        <input type="text" id="country" placeholder="Казахстан" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Годовой доход семьи (USD)</label>
+                        <input type="number" id="family_income" min="0" placeholder="50000">
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="column-title">📊 Баллы экзаменов</div>
+                    <div class="form-group">
+                        <label>GPA (0-4.0)</label>
+                        <input type="number" id="gpa" min="0" max="4" step="0.1" placeholder="3.8">
+                    </div>
+                    <div class="form-group">
+                        <label>SAT (400-1600)</label>
+                        <input type="number" id="sat" min="400" max="1600" placeholder="1200">
+                    </div>
+                    <div class="form-group">
+                        <label>IELTS (0-9)</label>
+                        <input type="number" id="ielts" min="0" max="9" step="0.5" placeholder="7.0">
+                    </div>
+                    <div class="form-group">
+                        <label>TOEFL (0-120)</label>
+                        <input type="number" id="toefl" min="0" max="120" placeholder="100">
+                    </div>
+                    <div class="form-group">
+                        <label>ЕНТ (0-140)</label>
+                        <input type="number" id="ent" min="0" max="140" placeholder="130">
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="column-title">🏆 Достижения / Honours</div>
+                    <div class="subsection">
+                        <div class="subsection-title">🏅 Олимпиады и соревнования</div>
+                        <textarea id="olympics" placeholder="Международная олимпиада по информатике - 2 место..."></textarea>
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">🔬 Научные работы и исследования</div>
+                        <textarea id="research" placeholder="Исследование в области машинного обучения..."></textarea>
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">📊 IT проекты и разработка</div>
+                        <textarea id="projects" placeholder="Мобильное приложение (50k+ скачиваний)..."></textarea>
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">🚀 Стартапы и предпринимательство</div>
+                        <textarea id="startup" placeholder="Основал EdTech стартап..."></textarea>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="column-title">🎯 Активности / Activities</div>
+                    <div class="subsection">
+                        <div class="subsection-title">🎤 Конференции и выступления</div>
+                        <textarea id="conferences" placeholder="Докладчик на TEDx Talk..."></textarea>
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">❤️ Волонтёрская деятельность</div>
+                        <textarea id="volunteer" placeholder="Волонтёр в детском доме (200+ часов)..."></textarea>
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">👑 Лидерство и организация</div>
+                        <textarea id="leadership" placeholder="Президент школьного совета..."></textarea>
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">🎨 Творчество и искусство</div>
+                        <textarea id="arts" placeholder="Победитель конкурса художников..."></textarea>
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">💼 Стажировки и рабочий опыт</div>
+                        <textarea id="work_experience" placeholder="Стажировка в Google (3 месяца)..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+               <a href="profileMAIN.html"><button class="btn" type="submit">📝 Зарегистрироваться</button></a>
+            </div>
+        </form>
+
+        <div class="disclaimer">
+            ⚠️ Примечание: Все данные сохраняются локально для демонстрации. Для полной функциональности потребуется интеграция с сервером.
+        </div>
+    </div>
+
+    <script>
+        function registerUser() {
+            const userData = {
+                full_name: document.getElementById('full_name').value,
+                age: document.getElementById('age').value,
+                place_of_study: document.getElementById('place_of_study').value,
+                country: document.getElementById('country').value,
+                family_income: document.getElementById('family_income').value,
+                gpa: document.getElementById('gpa').value,
+                sat: document.getElementById('sat').value,
+                ielts: document.getElementById('ielts').value,
+                toefl: document.getElementById('toefl').value,
+                ent: document.getElementById('ent').value,
+                olympics: document.getElementById('olympics').value,
+                research: document.getElementById('research').value,
+                projects: document.getElementById('projects').value,
+                startup: document.getElementById('startup').value,
+                conferences: document.getElementById('conferences').value,
+                volunteer: document.getElementById('volunteer').value,
+                leadership: document.getElementById('leadership').value,
+                arts: document.getElementById('arts').value,
+                work_experience: document.getElementById('work_experience').value
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+            alert('Регистрация успешна! Перейдите в личный кабинет.');
+            window.location.href = 'profileMAIN.html';
+        }
+    </script>
+</body>
+</html>

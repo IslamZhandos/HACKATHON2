@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniChance - Личный кабинет</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <style>
+        .profile-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .profile-section { margin-bottom: 30px; }
+        .edit-btn { background: #2d4a6f; color: #ffffff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; margin-left: 10px; }
+        .save-btn { background: #1e3a5f; color: #ffffff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; margin-left: 10px; }
+        .document-preview { margin-top: 10px; padding: 15px; background: #faf8f5; border-radius: 12px; border-left: 4px solid #1e3a5f; }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="header">
+              <div class="nav-buttons">
+        <a href="community.html"><button class="nav-btn">👥 Сообщество</button></a>
+        <a href="universities.html"><button class="nav-btn">🏫 Университеты</button></a>
+        <a href="register.html"><button class="nav-btn" id="register-btn">📝 Регистрация</button></a>
+    </div>
+            <h1>🎓 UniChance - Личный кабинет</h1>
+            <p>Просматривайте и редактируйте свои данные</p>
+        </div>
+
+        <div class="card profile-section">
+            <div class="column-title">📋 Личная информация <span class="edit-btn" onclick="toggleEdit('personal')">✏️ Редактировать</span></div>
+            <div id="personal-display">
+                <p><strong>ФИО:</strong> <span id="display_full_name"></span></p>
+                <p><strong>Возраст:</strong> <span id="display_age"></span></p>
+                <p><strong>Место обучения:</strong> <span id="display_place_of_study"></span></p>
+                <p><strong>Страна проживания:</strong> <span id="display_country"></span></p>
+                <p><strong>Годовой доход семьи (USD):</strong> <span id="display_family_income"></span></p>
+            </div>
+            <div id="personal-edit" style="display: none;">
+                <div class="form-group">
+                    <label>ФИО</label>
+                    <input type="text" id="edit_full_name">
+                </div>
+                <div class="form-group">
+                    <label>Возраст</label>
+                    <input type="number" id="edit_age" min="10" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Место обучения</label>
+                    <input type="text" id="edit_place_of_study">
+                </div>
+                <div class="form-group">
+                    <label>Страна проживания</label>
+                    <input type="text" id="edit_country">
+                </div>
+                <div class="form-group">
+                    <label>Годовой доход семьи (USD)</label>
+                    <input type="number" id="edit_family_income" min="0">
+                </div>
+                <button class="save-btn" onclick="saveSection('personal')">💾 Сохранить</button>
+            </div>
+        </div>
+
+        <div class="card profile-section">
+            <div class="column-title">📊 Баллы экзаменов <span class="edit-btn" onclick="toggleEdit('exams')">✏️ Редактировать</span></div>
+            <div id="exams-display">
+                <p><strong>GPA:</strong> <span id="display_gpa"></span></p>
+                <p><strong>SAT:</strong> <span id="display_sat"></span></p>
+                <p><strong>IELTS:</strong> <span id="display_ielts"></span></p>
+                <p><strong>TOEFL:</strong> <span id="display_toefl"></span></p>
+                <p><strong>ЕНТ:</strong> <span id="display_ent"></span></p>
+            </div>
+            <div id="exams-edit" style="display: none;">
+                <div class="form-group">
+                    <label>GPA (0-4.0)</label>
+                    <input type="number" id="edit_gpa" min="0" max="4" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>SAT (400-1600)</label>
+                    <input type="number" id="edit_sat" min="400" max="1600">
+                </div>
+                <div class="form-group">
+                    <label>IELTS (0-9)</label>
+                    <input type="number" id="edit_ielts" min="0" max="9" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label>TOEFL (0-120)</label>
+                    <input type="number" id="edit_toefl" min="0" max="120">
+                </div>
+                <div class="form-group">
+                    <label>ЕНТ (0-140)</label>
+                    <input type="number" id="edit_ent" min="0" max="140">
+                </div>
+                <button class="save-btn" onclick="saveSection('exams')">💾 Сохранить</button>
+            </div>
+        </div>
+
+        <div class="card profile-section">
+            <div class="column-title">🏆 Достижения / Honours <span class="edit-btn" onclick="toggleEdit('honours')">✏️ Редактировать</span></div>
+            <div id="honours-display">
+                <p><strong>Олимпиады и соревнования:</strong> <span id="display_olympics"></span></p>
+                <p><strong>Научные работы и исследования:</strong> <span id="display_research"></span></p>
+                <p><strong>IT проекты и разработка:</strong> <span id="display_projects"></span></p>
+                <p><strong>Стартапы и предпринимательство:</strong> <span id="display_startup"></span></p>
+            </div>
+            <div id="honours-edit" style="display: none;">
+                <div class="subsection">
+                    <div class="subsection-title">🏅 Олимпиады и соревнования</div>
+                    <textarea id="edit_olympics"></textarea>
+                </div>
+                <div class="subsection">
+                    <div class="subsection-title">🔬 Научные работы и исследования</div>
+                    <textarea id="edit_research"></textarea>
+                </div>
+                <div class="subsection">
+                    <div class="subsection-title">📊 IT проекты и разработка</div>
+                    <textarea id="edit_projects"></textarea>
+                </div>
+                <div class="subsection">
+                    <div class="subsection-title">🚀 Стартапы и предпринимательство</div>
+                    <textarea id="edit_startup"></textarea>
+                </div>
+                <button class="save-btn" onclick="saveSection('honours')">💾 Сохранить</button>
+            </div>
+        </div>
+
+        <div class="card profile-section">
+            <div class="column-title">🎯 Активности / Activities <span class="edit-btn" onclick="toggleEdit('activities')">✏️ Редактировать</span></div>
+            <div id="activities-display">
+                <p><strong>Конференции и выступления:</strong> <span id="display_conferences"></span></p>
+                <p><strong>Волонтёрская деятельность:</strong> <span id="display_volunteer"></span></p>
+                <p><strong>Лидерство и организация:</strong> <span id="display_leadership"></span></p>
+                <p><strong>Творчество и искусство:</strong> <span id="display_arts"></span></p>
+                <p><strong>Стажировки и рабочий опыт:</strong> <span id="display_work_experience"></span></p>
+            </div>
+            <div id="activities-edit" style="display: none;">
+                <div class="subsection">
+                    <div class="subsection-title">🎤 Конференции и выступления</div>
+                    <textarea id="edit_conferences"></textarea>
+                </div>
+                <div class="subsection">
+                    <div class="subsection-title">❤️ Волонтёрская деятельность</div>
+                    <textarea id="edit_volunteer"></textarea>
+                </div>
+                <div class="subsection">
+                    <div class="subsection-title">👑 Лидерство и организация</div>
+                    <textarea id="edit_leadership"></textarea>
+                </div>
+                <div class="subsection">
+                    <div class="subsection-title">🎨 Творчество и искусство</div>
+                    <textarea id="edit_arts"></textarea>
+                </div>
+                <div class="subsection">
+                    <div class="subsection-title">💼 Стажировки и рабочий опыт</div>
+                    <textarea id="edit_work_experience"></textarea>
+                </div>
+                <button class="save-btn" onclick="saveSection('activities')">💾 Сохранить</button>
+            </div>
+        </div>
+
+        <div class="card profile-section">
+            <div class="column-title">📄 Документы</div>
+            <div class="form-group">
+                <label>Мотивационное эссе</label>
+                <input type="file" id="sop" accept=".docx">
+                <small>Загрузите файл в формате DOCX</small>
+                <div id="sop-preview" class="document-preview" style="display: none;"></div>
+            </div>
+            <div class="form-group">
+                <label>Рекомендательное письмо</label>
+                <input type="file" id="lor" accept=".docx">
+                <small>Загрузите файл в формате DOCX</small>
+                <div id="lor-preview" class="document-preview" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+
+        function filledCell(cell) {
+            return cell !== '' && cell != null;
+        }
+
+        function loadFileData(filename) {
+            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+                try {
+                    var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                    var firstSheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[firstSheetName];
+                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                    var filteredData = jsonData.filter(row => row.some(filledCell));
+                    var headerRowIndex = filteredData.findIndex((row, index) => row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length) || 0;
+                    if (headerRowIndex > 25) headerRowIndex = 0;
+                    var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                    csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                    return csv;
+                } catch (e) {
+                    console.error(e);
+                    return "";
+                }
+            }
+            return gk_fileData[filename] || "";
+        }
+
+        function loadProfile() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            document.getElementById('display_full_name').textContent = userData.full_name || 'Не указано';
+            document.getElementById('display_age').textContent = userData.age || 'Не указано';
+            document.getElementById('display_place_of_study').textContent = userData.place_of_study || 'Не указано';
+            document.getElementById('display_country').textContent = userData.country || 'Не указано';
+            document.getElementById('display_family_income').textContent = userData.family_income || 'Не указано';
+            document.getElementById('display_gpa').textContent = userData.gpa || 'Не указано';
+            document.getElementById('display_sat').textContent = userData.sat || 'Не указано';
+            document.getElementById('display_ielts').textContent = userData.ielts || 'Не указано';
+            document.getElementById('display_toefl').textContent = userData.toefl || 'Не указано';
+            document.getElementById('display_ent').textContent = userData.ent || 'Не указано';
+            document.getElementById('display_olympics').textContent = userData.olympics || 'Не указано';
+            document.getElementById('display_research').textContent = userData.research || 'Не указано';
+            document.getElementById('display_projects').textContent = userData.projects || 'Не указано';
+            document.getElementById('display_startup').textContent = userData.startup || 'Не указано';
+            document.getElementById('display_conferences').textContent = userData.conferences || 'Не указано';
+            document.getElementById('display_volunteer').textContent = userData.volunteer || 'Не указано';
+            document.getElementById('display_leadership').textContent = userData.leadership || 'Не указано';
+            document.getElementById('display_arts').textContent = userData.arts || 'Не указано';
+            document.getElementById('display_work_experience').textContent = userData.work_experience || 'Не указано';
+        }
+
+        function toggleEdit(section) {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            document.getElementById(`${section}-display`).style.display = 'none';
+            document.getElementById(`${section}-edit`).style.display = 'block';
+            if (section === 'personal') {
+                document.getElementById('edit_full_name').value = userData.full_name || '';
+                document.getElementById('edit_age').value = userData.age || '';
+                document.getElementById('edit_place_of_study').value = userData.place_of_study || '';
+                document.getElementById('edit_country').value = userData.country || '';
+                document.getElementById('edit_family_income').value = userData.family_income || '';
+            } else if (section === 'exams') {
+                document.getElementById('edit_gpa').value = userData.gpa || '';
+                document.getElementById('edit_sat').value = userData.sat || '';
+                document.getElementById('edit_ielts').value = userData.ielts || '';
+                document.getElementById('edit_toefl').value = userData.toefl || '';
+                document.getElementById('edit_ent').value = userData.ent || '';
+            } else if (section === 'honours') {
+                document.getElementById('edit_olympics').value = userData.olympics || '';
+                document.getElementById('edit_research').value = userData.research || '';
+                document.getElementById('edit_projects').value = userData.projects || '';
+                document.getElementById('edit_startup').value = userData.startup || '';
+            } else if (section === 'activities') {
+                document.getElementById('edit_conferences').value = userData.conferences || '';
+                document.getElementById('edit_volunteer').value = userData.volunteer || '';
+                document.getElementById('edit_leadership').value = userData.leadership || '';
+                document.getElementById('edit_arts').value = userData.arts || '';
+                document.getElementById('edit_work_experience').value = userData.work_experience || '';
+            }
+        }
+
+        function saveSection(section) {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            if (section === 'personal') {
+                userData.full_name = document.getElementById('edit_full_name').value;
+                userData.age = document.getElementById('edit_age').value;
+                userData.place_of_study = document.getElementById('edit_place_of_study').value;
+                userData.country = document.getElementById('edit_country').value;
+                userData.family_income = document.getElementById('edit_family_income').value;
+            } else if (section === 'exams') {
+                userData.gpa = document.getElementById('edit_gpa').value;
+                userData.sat = document.getElementById('edit_sat').value;
+                userData.ielts = document.getElementById('edit_ielts').value;
+                userData.toefl = document.getElementById('edit_toefl').value;
+                userData.ent = document.getElementById('edit_ent').value;
+            } else if (section === 'honours') {
+                userData.olympics = document.getElementById('edit_olympics').value;
+                userData.research = document.getElementById('edit_research').value;
+                userData.projects = document.getElementById('edit_projects').value;
+                userData.startup = document.getElementById('edit_startup').value;
+            } else if (section === 'activities') {
+                userData.conferences = document.getElementById('edit_conferences').value;
+                userData.volunteer = document.getElementById('edit_volunteer').value;
+                userData.leadership = document.getElementById('edit_leadership').value;
+                userData.arts = document.getElementById('edit_arts').value;
+                userData.work_experience = document.getElementById('edit_work_experience').value;
+            }
+            localStorage.setItem('userData', JSON.stringify(userData));
+            document.getElementById(`${section}-display`).style.display = 'block';
+            document.getElementById(`${section}-edit`).style.display = 'none';
+            loadProfile();
+        }
+
+        document.getElementById('sop').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    mammoth.extractRawText({ arrayBuffer: e.target.result })
+                        .then(function(result) {
+                            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                            userData.sopText = result.value.trim();
+                            localStorage.setItem('userData', JSON.stringify(userData));
+                            document.getElementById('sop-preview').innerHTML = result.value;
+                            document.getElementById('sop-preview').style.display = 'block';
+                        })
+                        .catch(function(error) {
+                            console.error('Ошибка обработки SOP:', error);
+                        });
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        document.getElementById('lor').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    mammoth.extractRawText({ arrayBuffer: e.target.result })
+                        .then(function(result) {
+                            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                            userData.lorText = result.value.trim();
+                            localStorage.setItem('userData', JSON.stringify(userData));
+                            document.getElementById('lor-preview').innerHTML = result.value;
+                            document.getElementById('lor-preview').style.display = 'block';
+                        })
+                        .catch(function(error) {
+                            console.error('Ошибка обработки LOR:', error);
+                        });
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        window.onload = loadProfile;
+    </script>
+</body>
+</html>

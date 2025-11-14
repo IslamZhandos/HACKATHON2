@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniChance - Университеты</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f1e8;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .universities-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: #1e3a5f;
+            margin-bottom: 30px;
+            background: #faf8f3;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #1e3a5f;
+        }
+
+        .header p {
+            color: #5a6c7d;
+            font-size: 1.1rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: #faf8f3;
+            color: #1e3a5f;
+            border: 2px solid #1e3a5f;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #1e3a5f;
+            color: #faf8f3;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+        }
+
+        .search-filter {
+            background: #faf8f3;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e8dcc8;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: #faf8f3;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #1e3a5f;
+        }
+
+        .university-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .university-card {
+            background: #faf8f3;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid #1e3a5f;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .university-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .university-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .university-name {
+            color: #1e3a5f;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .major-name {
+            color: #1e3a5f;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            background: #f0ebe0;
+            border-radius: 5px;
+        }
+
+        .acceptance-rate {
+            background: #f0ebe0;
+            color: #1e3a5f;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info-item {
+            color: #5a6c7d;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .info-item strong {
+            color: #1e3a5f;
+        }
+
+        .btn-calculate {
+            background: #4caf50;
+            color: #faf8f3;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+
+        .btn-calculate:hover {
+            background: #45a049;
+            transform: scale(1.02);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background: #faf8f3;
+            color: #1e3a5f;
+            border: 2px solid #1e3a5f;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #1e3a5f;
+            color: #faf8f3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .pagination button.active {
+            background: #1e3a5f;
+            color: #faf8f3;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            color: #1e3a5f;
+            font-weight: 600;
+            padding: 10px 20px;
+            background: #faf8f3;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .university-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pagination {
+                gap: 5px;
+            }
+
+            .pagination button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="universities-container">
+        <div class="header">
+            <div class="nav-buttons">
+                <a href="community.html"><button class="nav-btn">💥 Сообщество</button></a>
+                <a href="universities.html"><button class="nav-btn">🏫 Университеты</button></a>
+                <a href="register.html"><button class="nav-btn">📝 Регистрация</button></a>
+            </div>
+            <h1>🎓 UniChance - Университеты</h1>
+            <p>Изучите программы и шансы поступления</p>
+        </div>
+
+        <div class="search-filter">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по университету или мэйджору...">
+        </div>
+
+        <div class="university-grid" id="universityGrid">
+            <!-- Cards will be generated by JavaScript -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const CARDS_PER_PAGE = 12;
+        let currentPage = 1;
+        let allCards = [];
+        let filteredCards = [];
+
+        const universities = [
+            {
+                name: "Гарвардский университет",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdcq9EdUOzCNxd0zJQWHovi5TpQkJkFxF1Fg&s",
+                location: "Массачусетс, США",
+                acceptance: "3.43%",
+                tuition: "$59,320",
+                housing: "$22,000",
+                duration: "4 года",
+                scholarships: "Полные гранты, помощь на основе нуждаемости",
+                majors: ["Computer Science", "Engineering", "Economics", "International Relations"]
+            },
+            {
+                name: "MIT",
+                logo: "https://www.logo.wine/a/logo/Massachusetts_Institute_of_Technology/Massachusetts_Institute_of_Technology-Logo.wine.svg",
+                location: "Массачусетс, США",
+                acceptance: "ниже 4%",
+                tuition: "$64,310",
+                housing: "$21,000",
+                duration: "4 года",
+                scholarships: "Полное финансирование для большинства PhD программ",
+                majors: ["Computer Science", "Engineering", "Economics", "Political Science"]
+            },
+            {
+                name: "Стэнфордский университет",
+                logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAwFBMVEX///+GAACFAACJAACCAAD+/Pz8+Ph/AAD9+vr79fX27e2MAAD48fHZuLh7AAD06urw4+OmU1Piysrm0dHu39+vaGjHl5fLoKC8goLHlpbUr6+3e3uYMTGcPj6+hobdv7+pX1+eQkLPoKCxbW2PEhKjSkqSJiakUFDcvLzBjY2xZmbDg4OwYGCYJSW3g4POm5uaLS26c3OVMjKxdnbKpqaYPj6pTU3ej4PAAAAAgAElEQVR4nO2di1fbyrbopWsoYqVDkqnMTBoSEgop4gO8YkmwfUQrGUDL8JCHJ//9X7yzGg2jfh4l2fect+7du0/P6V2Tm4b21j/3/Wb95g==",
+                location: "Калифорния, США",
+                acceptance: "ниже 4%",
+                tuition: "$62,000",
+                housing: "$20,000",
+                duration: "4 года",
+                scholarships: "Knight-Hennessy покрывает все расходы",
+                majors: ["Computer Science", "Engineering", "Economics", "International Relations"]
+            },
+            {
+                name: "Оксфордский университет",
+                logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM0AAAD2CAMAAABC3/M1AAAB2lBMVEUAIUf////24Hjs7OzdJibz8/MAAAAAIEgAH0pPQQxFPBcAH0jAAADBAAAAIkkAHkKeAACUBga4AADeHSUAHUmsAACcDQ0+FjCxFxe4XSS0gjHp1477+vfv8PO5qXDq6ea7pky1pGDQtQDt01gAGkn/6ad9YwC9pwAAF0jUvErv1Vl4eHizs7NnZ2c0NS+jiSckJCTDw8OiUyLW1tYAEkeDg4PeyWdPT084ODguJwDt1CLn1HZ1WgCQkJCdnZ0XFxfb29sfHx8/Pz+LcAC9pDdsbGy9vb1eDR354l0HID3/6p3hyVqxlwDMtVGnp6dLS0v/63fCqj7/8Ijx2CvdxBbKswyZgAD54VT75Y8AEErw2ZImJx2iiB7cw07bynjDrE2+uKUVIzN2aDthVyoAAEarlj1JRS5vYigZKDs+PS6NfDu7oSkAGzHTujZvYR7FsFaYfxvIvJJLEymSiGnTz8A3LgDCTiOdlHg1KwCRfzIvLRdeVjRyZB4mLjirmkuKeSiZiE1USxjiyDxaSgHZx3HHrjCHe0RUUz3Hu4zh2Ljv6tgnNEYRKEN/Yi1wRCYkGzqOOw5zHgplEhd7bgunaR6yMQmsSxLLOyLGSCNzBxA1GDWXjW86NhqxqZKyxWMbAAAgAElEQVR4nO2di1saWb",
+                location: "Оксфорд, Великобритания",
+                acceptance: "17-20%",
+                tuition: "$45,000-78,000",
+                housing: "$15,000-18,000",
+                duration: "3 года",
+                scholarships: "Rhodes, Clarendon",
+                majors: ["Computer Science", "Engineering", "Economics and Management", "PPE (Philosophy, Politics, and Economics)"]
+            },
+            {
+                name: "Кембриджский университет",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPfTy-ggVi5C9BeeyTWsjI0ON8cG1X8nboyQ&s",
+                location: "Кембридж, Великобритания",
+                acceptance: "22-25%",
+                tuition: "$33,000-92,000",
+                housing: "$15,000-18,000",
+                duration: "3 года",
+                scholarships: "Gates, Cambridge Trust",
+                majors: ["Computer Science", "Engineering", "Economics", "HSPS (Human, Social, and Political Sciences)"]
+            },
+            {
+                name: "Назарбаев Университет",
+                logo: "https://static.tildacdn.pro/tild3836-3534-4531-b437-643930313666/NU_Logo_ENG-01.png",
+                location: "Астана, Казахстан",
+                acceptance: "~50%",
+                tuition: "$6,000-7,000",
+                housing: "$3,000-5,000",
+                duration: "4 года",
+                scholarships: "Частично доступны",
+                majors: ["Computer Science", "Engineering", "Economics", "International Relations"]
+            },
+            {
+                name: "Университет KIMEP",
+                logo: "https://www.kimep.kz/wp-content/uploads/2024/10/Logo-Kimep2.png",
+                location: "Алматы, Казахстан",
+                acceptance: "~40-50%",
+                tuition: "$8,000-9,600",
+                housing: "$4,000-6,000",
+                duration: "4 года",
+                scholarships: "Конкурсные",
+                majors: ["Computer Science", "Economics", "International Relations"]
+            },
+            {
+                name: "Казахский Национальный Университет имени аль-Фараби",
+                logo: "https://avatars.mds.yandex.net/i?id=8a77868bf857a3900c526c547563cad978650748-5355267-images-thumbs&n=13",
+                location: "Алматы, Казахстан",
+                acceptance: "~50%",
+                tuition: "$4,500-5,500",
+                housing: "$3,000-5,000",
+                duration: "4 года",
+                scholarships: "Для отличников",
+                majors: ["Computer Science", "Engineering", "Economics", "International Relations"]
+            },
+            {
+                name: "Евразийский Национальный Университет имени Л.Н. Гумилева",
+                logo: "https://avatars.mds.yandex.net/i?id=9506cb285f5dfd78278e4fd512519adaf8a4213b-10652854-images-thumbs&n=13",
+                location: "Астана, Казахстан",
+                acceptance: "~50%",
+                tuition: "$6,000-7,000",
+                housing: "$3,000-5,000",
+                duration: "4 года",
+                scholarships: "Частично доступны",
+                majors: ["Computer Science", "Engineering", "Economics", "International Relations"]
+            },
+            {
+                name: "ETH Zurich",
+                logo: "https://spng.pngfind.com/pngs/s/682-6828789_eth-zurich-hd-png-download.png",
+                location: "Цюрих, Швейцария",
+                acceptance: "27%",
+                tuition: "$1,500-2,000",
+                housing: "$15,000-18,000",
+                duration: "4 года",
+                scholarships: "Полные для PhD студентов",
+                majors: ["Computer Science", "Mechanical Engineering", "Economics", "Electrical Engineering", "Environmental Sciences"]
+            },
+            {
+                name: "EPFL",
+                logo: "https://www.epfl.ch/about/overview/wp-content/uploads/2020/07/logo-epfl.png",
+                location: "Лозанна, Швейцария",
+                acceptance: "50-55%",
+                tuition: "$1,400",
+                housing: "$15,000-18,000",
+                duration: "4 года",
+                scholarships: "Полные для PhD студентов",
+                majors: ["Computer Science", "Civil Engineering", "Economics", "Bioengineering", "Robotics"]
+            },
+            {
+                name: "Университет PSL",
+                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/LOGO-PSL-nov-2017.png/2560px-LOGO-PSL-nov-2017.png",
+                location: "Париж, Франция",
+                acceptance: "10-15%",
+                tuition: "$100-1,000",
+                housing: "$10,000-15,000",
+                duration: "4 года",
+                scholarships: "Полные доступны",
+                majors: ["Computer Science", "Engineering", "Economics", "Physics", "Humanities", "Cognitive Science"]
+            },
+            {
+                name: "Nanyang технологический университет",
+                logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f8/Nanyang_Technological_University_coat_of_arms_vector.svg/929px-Nanyang_Technological_University_coat_of_arms_vector.svg.png",
+                location: "Сингапур",
+                acceptance: "15-20%",
+                tuition: "$20,000-30,000",
+                housing: "$10,000-15,000",
+                duration: "4 года",
+                scholarships: "Полные для международных студентов",
+                majors: ["Computer Science", "Mechanical Engineering", "Economics", "Biomedical Sciences", "Business"]
+            },
+            {
+                name: "KAIST",
+                logo: "https://download.logo.wine/logo/KAIST/KAIST-Logo.wine.png",
+                location: "Тэджон, Южная Корея",
+                acceptance: "15-20%",
+                tuition: "$4,000-6,000",
+                housing: "$6,000-9,000",
+                duration: "4 года",
+                scholarships: "Полные доступны",
+                majors: ["Computer Science", "Mechanical Engineering", "Economics", "Physics", "Industrial Design"]
+            },
+            {
+                name: "Токийский университет",
+                logo: "https://www.u-tokyo.ac.jp/content/400235961.png",
+                location: "Токио, Япония",
+                acceptance: "30-40%",
+                tuition: "$5,000-7,000",
+                housing: "$8,000-12,000",
+                duration: "4 года",
+                scholarships: "Полные для PhD и лучших студентов",
+                majors: ["Computer Science", "Engineering", "Economics", "Medicine", "Law"]
+            },
+            {
+                name: "Университет Халифа",
+                logo: "https://keystoneacademic-res.cloudinary.com/image/upload/element/13/134153_91295362_2773222219421246_5726517871857631232_n.jpg",
+                location: "Абу-Даби, ОАЭ",
+                acceptance: "15-20%",
+                tuition: "$15,000-20,000",
+                housing: "$12,000-16,000",
+                duration: "4 года",
+                scholarships: "Полные для отличников",
+                majors: ["Computer Science", "Mechanical Engineering", "Economics", "Biomedical Engineering", "Petroleum Engineering"]
+            },
+            {
+                name: "NYU Abu Dhabi",
+                logo: "https://research.ju.edu.jo/PublishingImages/Logos/new-york-university-logo-kls80-kakanda-lee-setiawan.jpg",
+                location: "Абу-Даби, ОАЭ",
+                acceptance: "20-25%",
+                tuition: "$55,000",
+                housing: "$18,000-22,000",
+                duration: "4 года",
+                scholarships: "Ограничены, высокая конкуренция",
+                majors: ["Computer Science", "Engineering", "Economics", "Biology", "Social Research"]
+            },
+            {
+                name: "Катарский университет",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS531o0lO7dTSfrNHrEuOdFYdjztVRaA8X_yQ&s",
+                location: "Доха, Катар",
+                acceptance: "40-50%",
+                tuition: "$8,000-12,000",
+                housing: "$10,000-14,000",
+                duration: "4 года",
+                scholarships: "Конкурсные",
+                majors: ["Computer Science", "Engineering", "Economics", "Medicine", "Law"]
+            },
+            {
+                name: "Университет Торонто",
+                logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Utoronto_coa.svg/1200px-Utoronto_coa.svg.png",
+                location: "Торонто, Канада",
+                acceptance: "40-45%",
+                tuition: "$40,000-45,000",
+                housing: "$12,000-16,000",
+                duration: "4 года",
+                scholarships: "Различные полные гранты",
+                majors: ["Computer Science", "Mechanical Engineering", "Economics", "Medicine", "Psychology"]
+            },
+            {
+                name: "Университет McGill",
+                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Mcgill_university_coa.png/250px-Mcgill_university_coa.png",
+                location: "Монреаль, Канада",
+                acceptance: "45%",
+                tuition: "$16,000-29,000",
+                housing: "$10,000-14,000",
+                duration: "4 года",
+                scholarships: "Доступны",
+                majors: ["Computer Science", "Civil Engineering", "Economics", "Neuroscience", "International Development"]
+            },
+            {
+                name: "Университет British Columbia",
+                logo: "https://landportal.org/sites/default/files/2023-05/s4b282c2015.png",
+                location: "Ванкувер, Канада",
+                acceptance: "50%",
+                tuition: "$30,000-35,000",
+                housing: "$12,000-16,000",
+                duration: "4 года",
+                scholarships: "Доступны",
+                majors: ["Computer Science", "Civil Engineering", "Economics", "Environmental Science", "Political Science"]
+            }
+        ];
+
+        function createCardData() {
+            allCards = [];
+            universities.forEach(uni => {
+                uni.majors.forEach(major => {
+                    allCards.push({
+                        html: `
+                            <img src="${uni.logo}" alt="${uni.name}" class="university-logo">
+                            <div class="university-name">${uni.name}</div>
+                            <div class="major-name"><strong>Мэйджор:</strong> ${major}</div>
+                            <div class="acceptance-rate">Процент приема: ${uni.acceptance} (2025)</div>
+                            <div class="info-item"><strong>Местоположение:</strong> ${uni.location}</div>
+                            <div class="info-item"><strong>Стоимость обучения:</strong> ${uni.tuition}</div>
+                            <div class="info-item"><strong>Проживание:</strong> ${uni.housing}</div>
+                            <div class="info-item"><strong>Продолжительность:</strong> ${uni.duration}</div>
+                            <div class="info-item"><strong>Стипендии:</strong> ${uni.scholarships}</div>
+                            <a href="calculatorMAIN.html?university=${encodeURIComponent(uni.name)}&major=${encodeURIComponent(major)}" class="btn-calculate">Рассчитать шанс</a>
+                        `,
+                        searchText: `${uni.name} ${major} ${uni.location}`.toLowerCase()
+                    });
+                });
+            });
+            filteredCards = [...allCards];
+        }
+
+        function displayCards(page) {
+            const grid = document.getElementById('universityGrid');
+            grid.innerHTML = '';
+
+            const startIndex = (page - 1) * CARDS_PER_PAGE;
+            const endIndex = startIndex + CARDS_PER_PAGE;
+            const cardsToShow = filteredCards.slice(startIndex, endIndex);
+
+            cardsToShow.forEach(cardData => {
+                const card = document.createElement('div');
+                card.className = 'university-card';
+                card.innerHTML = cardData.html;
+                grid.appendChild(card);
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function createPagination() {
+            const totalPages = Math.ceil(filteredCards.length / CARDS_PER_PAGE);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '← Назад';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayCards(currentPage);
+                    createPagination();
+                }
+            };
+            pagination.appendChild(prevBtn);
+
+            const info = document.createElement('div');
+            info.className = 'pagination-info';
+            info.textContent = `Страница ${currentPage} из ${totalPages}`;
+            pagination.appendChild(info);
+
+            const maxButtons = 5;
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+            
+            if (endPage - startPage < maxButtons - 1) {
+                startPage = Math.max(1, endPage - maxButtons + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = i === currentPage ? 'active' : '';
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    displayCards(currentPage);
+                    createPagination();
+                };
+                pagination.appendChild(pageBtn);
+            }
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Вперёд →';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayCards(currentPage);
+                    createPagination();
+                }
+            };
+            pagination.appendChild(nextBtn);
+        }
+
+        function filterCards() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (searchTerm === '') {
+                filteredCards = [...allCards];
+            } else {
+                filteredCards = allCards.filter(card => 
+                    card.searchText.includes(searchTerm)
+                );
+            }
+
+            currentPage = 1;
+            displayCards(currentPage);
+            createPagination();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterCards);
+
+        createCardData();
+        displayCards(currentPage);
+        createPagination();
+    </script>
+</body>
+</html>
